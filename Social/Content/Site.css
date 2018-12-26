@@ -28,7 +28,10 @@ body {
 .menu-item {
     text-decoration: none;
     color: #2B59C3;
-    margin: 5px;
+    border: none;
+    background: none;
+    font-weight: normal;
+    font-size: 16px;
 }
 
     .menu-item:hover {
@@ -271,6 +274,7 @@ body {
     background: #B2241A;
     padding: 20px;
     color: #fff;
+    margin: 20px 0;
 }
 
     .success-message i, .error-message i {
@@ -287,6 +291,10 @@ body {
     bottom: 0;
     margin: 0;
     width: 100%;
+}
+
+.hidden-form {
+    display: inline-block;
 }
 
 .form {
@@ -330,6 +338,10 @@ body {
 
 .login-header {
     margin-top: 0;
+}
+
+.logout-btn:hover {
+    cursor: pointer;
 }
 
 .block {

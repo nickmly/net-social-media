@@ -3,17 +3,17 @@
 @{
     ViewBag.Title = "Index";
 }
-<p>
-    @Html.ActionLink("Create New", "Create")
-</p>
 
 <div class="container">
+    <p>
+        @Html.ActionLink("Create New", "Create")
+    </p>
     @{
         foreach (var post in Model)
         {
             <div class="fluid card">
                 <div class="card-header">
-                    <div class="card-thumbnail">                        
+                    <div class="card-thumbnail">
                     </div>
                     <h3>
                         @if (!String.IsNullOrEmpty(post.Link))
@@ -26,12 +26,12 @@
                         {
                             @post.Title
                         }
-                    </h3>                    
+                    </h3>
                 </div>
                 <div class="card-opener" data-id="@post.ID">
                     <span class="card-opener-text">View More</span> <i class="fas fa-caret-down"></i>
                 </div>
-                <div class="card-body post">
+                <div class="card-body post" id="card-body-@post.ID">
                     @post.Content
                 </div>
                 <div class="card-footer">
@@ -53,5 +53,6 @@
             </div>
         }
     }
-
+    <script src="~/Scripts/card-openers.js"></script>
+    <script src="~/Scripts/posts.js"></script>
 </div>

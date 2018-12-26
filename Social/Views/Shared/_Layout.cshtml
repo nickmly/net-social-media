@@ -22,10 +22,14 @@
         @if (ClaimsPrincipal.Current.Identity.IsAuthenticated)
         {
             <div class="right">
-                <a class="menu-item" href="/user/<%= currentUser._id %>">My Profile</a>
-                <a id="btn-logout" href="/logout" class="menu-item">
-                    <i class="fas fa-sign-out-alt"></i> Logout
-                </a>
+                <a class="menu-item" href="/User/@ClaimsPrincipal.Current.Identity.Name">My Profile</a>
+                <form class="hidden-form" action="/Account/LogOff" method="post">
+                    @Html.AntiForgeryToken()
+                    <button class="logout-btn menu-item" id="btn-logout">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </form>
+                
             </div>
         }
         else
@@ -60,8 +64,6 @@
             </div>
         }
     </div>
-    @RenderBody()
-
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
     @RenderSection("scripts", required: false)
@@ -70,6 +72,9 @@
             $(this).parent().remove();
         });
     </script>
+    @RenderBody()
+
+
 </body>
 </html>
 
