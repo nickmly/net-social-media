@@ -1,0 +1,78 @@
+﻿@using System.Security.Claims;
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="~/Content/Site.css">
+    <title>Social Media</title>
+</head>
+
+<body>
+
+    <div class="navbar">
+        <a id="btn-home" href="/" class="menu-item">
+            <i class="fas fa-home"></i> Home
+        </a>
+        @if (ClaimsPrincipal.Current.Identity.IsAuthenticated)
+        {
+            <div class="right">
+                <a class="menu-item" href="/user/<%= currentUser._id %>">My Profile</a>
+                <a id="btn-logout" href="/logout" class="menu-item">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </a>
+            </div>
+        }
+        else
+        {
+            <div class="right menu">
+                <a id="btn-login" href='@Url.Action("Login", "Account")' class="menu-item">
+                    <i class="fas fa-sign-in-alt"></i> Login
+                </a>
+                <a id="btn-register" href='@Url.Action("Register", "Account")' class="menu-item">
+                    <i class="fas fa-user-plus"></i> Sign Up
+                </a>
+            </div>
+        }
+    </div>
+    <div class="container">
+        @if (ViewBag.SuccessMessage != null && ViewBag.SuccessMessage.Length > 0)
+        {
+            <div class="success-message">
+                <i class="close-btn right fas fa-times"></i>
+                <div class="header">
+                    <%= success %>
+                </div>
+            </div>
+        }
+        else if (ViewBag.ErrorMessage != null && ViewBag.ErrorMessage.Length > 0)
+        {
+            <div class="error-message">
+                <i class="close-btn right fas fa-times"></i>
+                <div class="header">
+                    <%= error %>
+                </div>
+            </div>
+        }
+    </div>
+    @RenderBody()
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+    <script>
+        $(".close-btn").on("click", function () {
+            $(this).parent().remove();
+        });
+    </script>
+</body>
+</html>
+
+
+
+
