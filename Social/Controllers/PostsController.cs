@@ -7,6 +7,7 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using Social;
+using Microsoft.AspNet.Identity;
 
 namespace Social.Controllers
 {
@@ -52,6 +53,7 @@ namespace Social.Controllers
             {
                 post.Likes = 0;
                 post.Dislikes = 0;
+                post.AuthorID = User.Identity.GetUserId();
 
                 db.Posts.Add(post);
                 db.SaveChanges();

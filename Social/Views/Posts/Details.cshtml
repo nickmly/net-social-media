@@ -1,74 +1,89 @@
 ﻿@model Social.Post
+@using System.Security.Claims;
 
 @{
     ViewBag.Title = "Details";
 }
 
-<h2>Details</h2>
+<div class="container">
+    <div class="card">
+        <div class="card-header">
+            @if (!String.IsNullOrEmpty(Model.Link))
+            {
+                <a href="@Model.Link">
+                    <h2>@Model.Title</h2>
+                </a>
+            }
+            else
+            {
+                <h2>@Model.Title</h2>
+            }
+            <em>Submitted by <a href="/Users/@Model.AuthorID">PLACEHOLDER USER</a></em>
+        </div>
+        <div class="card-body">
+            <p>@Model.Content</p>
+            @{
+                switch (Model.LinkType)
+                {
+                    case "Image":
+                        <img class="image" src="@Model.Link">
+                        break;
+                    case "Video":
+                        <video class="video" width="100%" autoplay controls loop>
+                            <source src="@Model.Link">
+                        </video>
+                        break;
+                    case "Youtube":
+                        <div class="yt-video-box">
+                            <iframe class="yt-video" src="@Model.Link" frameborder="0" allowfullscreen></iframe>
+                        </div>
+                        break;
+                }
+            }
+        </div>
+    </div>
+    @if (ClaimsPrincipal.Current.Identity.IsAuthenticated)
+    {
+        <form class="form no-padding" action="/Posts/@Model.ID" method="POST">
+            <div class="field">
+                <input type="text" name="comment[text]" placeholder="Comment">
+            </div>
+            <div class="field">
+                <button class="green btn">
+                    Add Comment
+                    <i class="fas fa-plus"></i>
+                </button>
+            </div>
+        </form>
+    }
+    else
+    {
+        <p>You must be logged in to comment.</p>
+    }    
 
-<div>
-    <h4>Post</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Title)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Title)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Link)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Link)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Content)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Content)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.LinkType)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.LinkType)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.AuthorID)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.AuthorID)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Likes)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Likes)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Dislikes)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Dislikes)
-        </dd>
-
-    </dl>
+    @*<h3>Comments</h3>*@
+    @*<% if(post.comments.length > 0) { %>
+    <ul>
+        <% post.comments.forEach(function(comment) { %>
+        <div class="condensed-card">
+            <div class="card-header">
+                <a class="link no-margin" href="/user/<%= comment.author.id %>"><%= comment.author.username %></a>
+            </div>
+            <div class="card-body">
+                <%= comment.text %>
+            </div>
+            <% if(currentUser && comment.author.id.equals(currentUser._id)){ %>
+            <div class="card-footer">
+                <a class="orange btn" href="/post/<%= post._id %>/comment/<%= comment._id %>/edit">Edit</a>
+                <form style="display: inline;" action="/post/<%= post._id %>/comment/<%= comment._id %>?_method=DELETE" method="POST">
+                    <button class="red btn">Delete</button>
+                </form>
+            </div>
+            <% } %>
+        </div>
+        <% }) %>
+    </ul>
+    <% } else { %>
+    <p>Nothing yet!</p>
+    <% } %>*@
 </div>
-<p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.ID }) |
-    @Html.ActionLink("Back to List", "Index")
-</p>

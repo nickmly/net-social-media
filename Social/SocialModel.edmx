@@ -14,9 +14,9 @@
           <Property Name="Link" Type="nvarchar(max)" />
           <Property Name="Content" Type="nvarchar(max)" />
           <Property Name="LinkType" Type="nvarchar" MaxLength="255" />
-          <Property Name="AuthorID" Type="int" />
           <Property Name="Likes" Type="int" />
           <Property Name="Dislikes" Type="int" />
+          <Property Name="AuthorID" Type="nvarchar(max)" />
         </EntityType>
         <EntityContainer Name="ModelStoreContainer">
           <EntitySet Name="Posts" EntityType="Self.Posts" Schema="dbo" store:Type="Tables" />
@@ -37,9 +37,9 @@
           <Property Name="Link" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="Content" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="LinkType" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="AuthorID" Type="Int32" />
           <Property Name="Likes" Type="Int32" />
           <Property Name="Dislikes" Type="Int32" />
+          <Property Name="AuthorID" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -50,9 +50,9 @@
           <EntitySetMapping Name="Posts">
             <EntityTypeMapping TypeName="Model.Post">
               <MappingFragment StoreEntitySet="Posts">
+                <ScalarProperty Name="AuthorID" ColumnName="AuthorID" />
                 <ScalarProperty Name="Dislikes" ColumnName="Dislikes" />
                 <ScalarProperty Name="Likes" ColumnName="Likes" />
-                <ScalarProperty Name="AuthorID" ColumnName="AuthorID" />
                 <ScalarProperty Name="LinkType" ColumnName="LinkType" />
                 <ScalarProperty Name="Content" ColumnName="Content" />
                 <ScalarProperty Name="Link" ColumnName="Link" />

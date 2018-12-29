@@ -19,8 +19,8 @@ namespace Social
         public string Link { get; set; }
         public string Content { get; set; }
         public string LinkType { get; set; }
-        public Nullable<int> AuthorID { get; set; }
         public Nullable<int> Likes { get; set; }
         public Nullable<int> Dislikes { get; set; }
+        public string AuthorID { get; set; }
     }
 }
