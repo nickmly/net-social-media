@@ -29,7 +29,22 @@ namespace Social.Controllers
                 return newUrl;
             }
 
-            return null;
+            return url;
+        }
+
+        public static string ConvertYoutubeLink(string url)
+        {
+            string videoID = url.Split(new string[] { "v=" }, StringSplitOptions.None)[1]; // Get ID and variables
+            if (videoID == null)
+                videoID = url.Split(new string[] { "e/" }, StringSplitOptions.None)[1]; // If there is no v= in the link, just separate with a slash
+
+            int endPoint = videoID.IndexOf("&"); // Find start of variables (time to start video, end video, etc.)
+            if (endPoint != -1)
+            { // If there are any vars
+                videoID = videoID.Substring(0, endPoint); // Get 12 digit video ID and leave out vars
+            }
+            string newUrl = "https://www.youtube.com/embed/" + videoID;// Youtube by default has links that do not work in an iframe, we have to convert them using /embed/
+            return newUrl;
         }
 
         public static string GetLinkType(string url)
@@ -100,6 +115,7 @@ namespace Social.Controllers
             {
                 return HttpNotFound();
             }
+            ViewBag.AuthorName = db.AspNetUsers.Where(u => (u.Id == post.AuthorID)).First().UserName;
             return View(post);
         }
 
@@ -120,9 +136,16 @@ namespace Social.Controllers
             {
                 post.Likes = 0;
                 post.Dislikes = 0;
+                // Get User ID and assign it to the post for reference later
                 post.AuthorID = User.Identity.GetUserId();
+                // Convert the link to an mp4 if it is a gifv
                 post.Link = LinkChecker.ConvertGifvToMp4(post.Link);
+                // Get link type (Video, Image, Youtube)
                 post.LinkType = LinkChecker.GetLinkType(post.Link);
+
+
+                if (post.LinkType == "Youtube")
+                    post.Link = LinkChecker.ConvertYoutubeLink(post.Link);
 
                 db.Posts.Add(post);
                 db.SaveChanges();
