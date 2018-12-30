@@ -32,7 +32,25 @@
                     <span class="card-opener-text">View More</span> <i class="fas fa-caret-down"></i>
                 </div>
                 <div class="card-body post" id="card-body-@post.ID">
-                    @post.Content
+                    <p>@post.Content</p>
+                    @{
+                        switch (post.LinkType)
+                        {
+                            case "Image":
+                                <img class="image" src="@post.Link">
+                                break;
+                            case "Video":
+                                <video class="video" width="100%" autoplay controls loop>
+                                    <source src="@post.Link">
+                                </video>
+                                break;
+                            case "Youtube":
+                                <div class="yt-video-box">
+                                    <iframe class="yt-video" src="@post.Link" frameborder="0" allowfullscreen></iframe>
+                                </div>
+                                break;
+                        }
+                    }
                 </div>
                 <div class="card-footer">
                     <span class="likes">
