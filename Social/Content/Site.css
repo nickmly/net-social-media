@@ -311,6 +311,10 @@ body {
             box-sizing: border-box;
         }
 
+textarea {
+    width: 100%;
+}
+
 .btn {
     background: #e6e1e1;
     padding: 10px;
