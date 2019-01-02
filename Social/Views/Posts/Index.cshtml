@@ -5,9 +5,9 @@
 }
 
 <div class="container">
-    <p>
-        @Html.ActionLink("Create New", "Create")
-    </p>
+    
+    @Html.ActionLink("Create New", "Create", null, new { @class = "btn" })
+    
     @{
         foreach (var post in Model)
         {
@@ -28,7 +28,7 @@
                         }
                     </h3>
                     <h5>
-                        Submitted by <a href="/Users/@post.AuthorID">PLACEHOLDER USER</a>
+                        Submitted by <a href="/Users/Details/@post.AuthorID">@post.AuthorName</a>
                     </h5>
                 </div>
                 <div class="card-opener" data-id="@post.ID">

@@ -12,15 +12,10 @@ namespace Social
     using System;
     using System.Collections.Generic;
     
-    public partial class Post
+    public partial class Comment
     {
         public int ID { get; set; }
-        public string Title { get; set; }
-        public string Link { get; set; }
         public string Content { get; set; }
-        public string LinkType { get; set; }
-        public Nullable<int> Likes { get; set; }
-        public Nullable<int> Dislikes { get; set; }
         public string AuthorID { get; set; }
         public string AuthorName { get; set; }
     }

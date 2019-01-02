@@ -1,4 +1,5 @@
-﻿@using System.Security.Claims;
+﻿@using Microsoft.AspNet.Identity;
+@using System.Security.Claims;
 
 <!DOCTYPE html>
 <html lang="en">
@@ -22,14 +23,14 @@
         @if (ClaimsPrincipal.Current.Identity.IsAuthenticated)
         {
             <div class="right">
-                <a class="menu-item" href="/User/@ClaimsPrincipal.Current.Identity.Name">My Profile</a>
+                <a class="menu-item" href="/Users/Details/@User.Identity.GetUserId()">My Profile</a>
                 <form class="hidden-form" action="/Account/LogOff" method="post">
                     @Html.AntiForgeryToken()
                     <button class="logout-btn menu-item" id="btn-logout">
                         <i class="fas fa-sign-out-alt"></i> Logout
                     </button>
                 </form>
-                
+
             </div>
         }
         else

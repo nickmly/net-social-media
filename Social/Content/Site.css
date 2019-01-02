@@ -1,6 +1,6 @@
 ﻿@import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro');
 
-body {
+body, input, textarea {
     font-family: 'Source Sans Pro', sans-serif;
 }
 
@@ -299,6 +299,8 @@ body {
 
 .form {
     padding: 20px;
+    background: #fff;
+    box-shadow: 0 0 3px 3px #e6e1e1;
 }
 
     .form .field {
@@ -313,26 +315,29 @@ body {
 
 textarea {
     width: 100%;
+    max-width: 100%;
 }
 
 .btn {
-    background: #e6e1e1;
+    background: #2B59C3;
     padding: 10px;
     border: none;
-    color: #333;
+    color: #fff;
     text-decoration: none;
     font-size: 1.0em;
 }
 
     .btn:hover {
         cursor: pointer;
+        background: #333;
+        color: #fff;
     }
 
 .login-btn {
-    width: 100%;
     background: #e6e1e1;
     border: none;
     padding: 10px;
+    font-size: 1.0em;
 }
 
     .login-btn:hover {

@@ -7,6 +7,7 @@
       <Diagram DiagramId="4ee58cc5b71b4281b4878a77acd90877" Name="Diagram1">
         <EntityTypeShape EntityType="Model.Post" Width="1.5" PointX="0.75" PointY="0.75" />
         <EntityTypeShape EntityType="Model.AspNetUser" Width="1.5" PointX="3.375" PointY="0.75" />
+        <EntityTypeShape EntityType="Model.Comment" Width="1.5" PointX="0.75" PointY="4.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

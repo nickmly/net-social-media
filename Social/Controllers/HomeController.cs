@@ -9,8 +9,8 @@ namespace Social.Controllers
     public class HomeController : Controller
     {
         public ActionResult Index()
-        {            
-            return View();
+        {
+            return Redirect("Posts/Index");
         }
 
         public ActionResult About()

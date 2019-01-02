@@ -120,6 +120,7 @@ namespace Social.Controllers
         }
 
         // GET: Posts/Create
+        [Authorize]
         public ActionResult Create()
         {
             return View();
@@ -130,18 +131,23 @@ namespace Social.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public ActionResult Create([Bind(Include = "ID,Title,Link,Content,LinkType,AuthorID,Likes,Dislikes")] Post post)
         {
             if (ModelState.IsValid)
             {
                 post.Likes = 0;
                 post.Dislikes = 0;
-                // Get User ID and assign it to the post for reference later
+                // Get User ID and name and assign it to the post for reference later
                 post.AuthorID = User.Identity.GetUserId();
+                post.AuthorName = User.Identity.GetUserName();
+
                 // Convert the link to an mp4 if it is a gifv
                 post.Link = LinkChecker.ConvertGifvToMp4(post.Link);
                 // Get link type (Video, Image, Youtube)
                 post.LinkType = LinkChecker.GetLinkType(post.Link);
+
+
 
 
                 if (post.LinkType == "Youtube")
@@ -156,6 +162,7 @@ namespace Social.Controllers
         }
 
         // GET: Posts/Edit/5
+        [Authorize]
         public ActionResult Edit(int? id)
         {
             if (id == null)
@@ -175,6 +182,7 @@ namespace Social.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public ActionResult Edit([Bind(Include = "ID,Title,Link,Content,LinkType,AuthorID,Likes,Dislikes")] Post post)
         {
             if (ModelState.IsValid)
