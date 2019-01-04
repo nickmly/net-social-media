@@ -10,7 +10,24 @@
             <h2>@Model.UserName</h2>
         </div>
         <div class="card-body">
-            Placeholder
+            <h4>Likes: </h4>
+            @{
+                if (ViewBag.CountLikedPosts > 0)
+                {
+                    <ul>
+                        @foreach (var post in ViewBag.LikedPosts)
+                        {
+                            <li><a class="link" href="@Url.Action("Details", "Posts", new { id = post.PostID })">@post.PostTitle</a></li>
+                        }
+                    </ul>
+                }
+                else
+                {
+                    <p>Nothing yet!</p>
+                }
+            }
+
+
         </div>
     </div>
 </div>

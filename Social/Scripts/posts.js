@@ -9,8 +9,7 @@
         url: url,
         data: data,
         success: function (res) {
-            var text = data.split(',');
-            console.log(text);
+            var text = res.split(',');
             likeText.text(text[0]);
             dislikeText.text(text[1]);
         },

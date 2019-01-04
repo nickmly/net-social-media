@@ -28,5 +28,6 @@ namespace Social
         public virtual DbSet<Post> Posts { get; set; }
         public virtual DbSet<AspNetUser> AspNetUsers { get; set; }
         public virtual DbSet<Comment> Comments { get; set; }
+        public virtual DbSet<UserLikedPost> UserLikedPosts { get; set; }
     }
 }

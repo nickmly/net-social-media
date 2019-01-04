@@ -27,6 +27,9 @@ namespace Social.Controllers
             {
                 return HttpNotFound();
             }
+            var likedPosts = db.UserLikedPosts.Where(p => p.UserID == aspNetUser.Id);
+            ViewBag.LikedPosts = likedPosts;
+            ViewBag.CountLikedPosts = likedPosts.Count();
             return View(aspNetUser);
         }
 

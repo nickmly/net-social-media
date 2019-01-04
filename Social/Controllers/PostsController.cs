@@ -203,8 +203,27 @@ namespace Social.Controllers
             int id = Convert.ToInt32(likeData.postID);
             Post post = db.Posts.Where(p => p.ID == id).First();
 
-
-            post.Likes++;
+            UserLikedPost userLikedPost = new UserLikedPost();
+            userLikedPost.PostID = post.ID;
+            userLikedPost.UserID = likeData.userID;
+            userLikedPost.PostTitle = post.Title;
+        
+            // See if post has already been liked by this user
+            var foundLikedPost = db.UserLikedPosts.FirstOrDefault(p => (p.PostID == post.ID && p.UserID == likeData.userID));
+            // If so, remove it from list and remove a like
+            if (foundLikedPost != null)
+            { 
+               db.UserLikedPosts.Remove(foundLikedPost);
+               post.Likes--;
+            }
+            // Otherwise, like it and add to user's liked posts
+            else
+            {
+                db.UserLikedPosts.Add(userLikedPost);
+                post.Likes++;
+            }
+  
+       
             db.Entry(post).State = EntityState.Modified;
             db.SaveChanges();
 
