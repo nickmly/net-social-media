@@ -121,7 +121,10 @@ namespace Social.Controllers
             {
                 return HttpNotFound();
             }
-            ViewBag.AuthorName = db.AspNetUsers.Where(u => (u.Id == post.AuthorID)).First().UserName;
+            ViewBag.AuthorName = db.AspNetUsers.FirstOrDefault(u => (u.Id == post.AuthorID)).UserName;
+            var comments = db.Comments.Where(c => c.PostID == id);
+            ViewBag.Comments = comments;
+            ViewBag.CountComments = comments.Count();
             return View(post);
         }
 
@@ -133,8 +136,6 @@ namespace Social.Controllers
         }
 
         // POST: Posts/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
@@ -181,8 +182,6 @@ namespace Social.Controllers
         }
 
         // POST: Posts/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]

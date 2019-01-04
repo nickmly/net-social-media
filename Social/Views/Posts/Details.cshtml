@@ -1,5 +1,6 @@
 ﻿@model Social.Post
 @using System.Security.Claims;
+@using Microsoft.AspNet.Identity;
 
 @{
     ViewBag.Title = "Details";
@@ -34,7 +35,7 @@
                         </video>
                         break;
                     case "Youtube":
-                        <div class="yt-video-box">
+                        <div class="yt-video-box" style="width: 100%">
                             <iframe class="yt-video" src="@Model.Link" frameborder="0" allowfullscreen></iframe>
                         </div>
                         break;
@@ -42,11 +43,14 @@
             }
         </div>
     </div>
+    <h3>Comments</h3>
     @if (ClaimsPrincipal.Current.Identity.IsAuthenticated)
     {
-        <form class="form no-padding no-background no-box-shadow" action="/Posts/@Model.ID" method="POST">
+        using (Html.BeginForm("Create", "Comments", new { postID = Model.ID }, FormMethod.Post, new { @class = "form no-padding no-background no-box-shadow", role = "form" }))
+        {
+            @Html.AntiForgeryToken()
             <div class="field">
-                <input type="text" name="comment[text]" placeholder="Comment">
+                <input type="text" id="content" name="content" placeholder="Comment">
             </div>
             <div class="field">
                 <button class="green btn">
@@ -54,36 +58,45 @@
                     <i class="fas fa-plus"></i>
                 </button>
             </div>
-        </form>
+
+        }
     }
     else
     {
-        <p>You must be logged in to comment.</p>
-    }    
-
-    @*<h3>Comments</h3>*@
-    @*<% if(post.comments.length > 0) { %>
-    <ul>
-        <% post.comments.forEach(function(comment) { %>
-        <div class="condensed-card">
-            <div class="card-header">
-                <a class="link no-margin" href="/user/<%= comment.author.id %>"><%= comment.author.username %></a>
-            </div>
-            <div class="card-body">
-                <%= comment.text %>
-            </div>
-            <% if(currentUser && comment.author.id.equals(currentUser._id)){ %>
-            <div class="card-footer">
-                <a class="orange btn" href="/post/<%= post._id %>/comment/<%= comment._id %>/edit">Edit</a>
-                <form style="display: inline;" action="/post/<%= post._id %>/comment/<%= comment._id %>?_method=DELETE" method="POST">
-                    <button class="red btn">Delete</button>
-                </form>
-            </div>
-            <% } %>
-        </div>
-        <% }) %>
-    </ul>
-    <% } else { %>
-    <p>Nothing yet!</p>
-    <% } %>*@
+        <p> You must be logged in to comment.</p>
+    }
+    @if (ViewBag.CountComments > 0)
+    {
+        <ul>
+            @foreach (var comment in ViewBag.Comments)
+            {
+                <div class="condensed-card">
+                    <div class="card-header">
+                        <a class="link no-margin" href="/Users/Details/@comment.AuthorID">@comment.AuthorName</a>
+                    </div>
+                    <div class="card-body">
+                        @comment.Content
+                    </div>
+                    @if (ClaimsPrincipal.Current.Identity.IsAuthenticated && User.Identity.GetUserId() == comment.AuthorID)
+                    {
+                    <div class="card-footer">
+                        <a class="orange btn" href="/Comments/Edit/@comment.ID">Edit</a>
+                        @using (Html.BeginForm("Delete", "Comments", new { id = comment.ID }, FormMethod.Post, new { @style = "display:inline;" }))
+                        {
+                            @Html.AntiForgeryToken()
+                            <button class="red btn">Delete</button>
+                        }
+                    </div>
+                    }
+                </div>
+            }
+        </ul>
+    }
+    else
+    {
+        <p>Nothing yet!</p>
+    }
 </div>
+
+
+
