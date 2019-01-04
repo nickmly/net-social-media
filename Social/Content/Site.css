@@ -362,6 +362,11 @@ ul {
     padding: 0;
 }
 
+.warning-message {
+    background: #f49e42;
+    color: #fff;
+}
+
 .red {
     background: #B2241A;
 }

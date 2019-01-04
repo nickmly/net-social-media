@@ -30,6 +30,11 @@ namespace Social.Controllers
             var likedPosts = db.UserLikedPosts.Where(p => p.UserID == aspNetUser.Id);
             ViewBag.LikedPosts = likedPosts;
             ViewBag.CountLikedPosts = likedPosts.Count();
+
+            var dislikedPosts = db.UserDislikedPosts.Where(p => p.UserID == aspNetUser.Id);
+            ViewBag.DislikedPosts = dislikedPosts;
+            ViewBag.CountDislikedPosts = dislikedPosts.Count();
+
             return View(aspNetUser);
         }
 

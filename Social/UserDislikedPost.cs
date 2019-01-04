@@ -12,12 +12,11 @@ namespace Social
     using System;
     using System.Collections.Generic;
     
-    public partial class Comment
+    public partial class UserDislikedPost
     {
         public int ID { get; set; }
-        public string Content { get; set; }
-        public string AuthorID { get; set; }
-        public string AuthorName { get; set; }
         public Nullable<int> PostID { get; set; }
+        public string UserID { get; set; }
+        public string PostTitle { get; set; }
     }
 }

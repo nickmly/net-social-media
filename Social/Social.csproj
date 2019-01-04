@@ -233,6 +233,9 @@
       <DependentUpon>SocialModel.edmx</DependentUpon>
     </Compile>
     <Compile Include="Startup.cs" />
+    <Compile Include="UserDislikedPost.cs">
+      <DependentUpon>SocialModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="UserLikedPost.cs">
       <DependentUpon>SocialModel.tt</DependentUpon>
     </Compile>

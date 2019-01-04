@@ -198,18 +198,28 @@ namespace Social.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public string Like(LikeData likeData)
         {
             int id = Convert.ToInt32(likeData.postID);
-            Post post = db.Posts.Where(p => p.ID == id).First();
+            Post post = db.Posts.FirstOrDefault(p => p.ID == id);
 
             UserLikedPost userLikedPost = new UserLikedPost();
             userLikedPost.PostID = post.ID;
             userLikedPost.UserID = likeData.userID;
             userLikedPost.PostTitle = post.Title;
         
-            // See if post has already been liked by this user
+            // See if post has already been liked/disliked by this user
             var foundLikedPost = db.UserLikedPosts.FirstOrDefault(p => (p.PostID == post.ID && p.UserID == likeData.userID));
+            var foundDislikedPost = db.UserDislikedPosts.FirstOrDefault(p => (p.PostID == post.ID && p.UserID == likeData.userID));
+
+            // If user has disliked it, then remove the dislike
+            if(foundDislikedPost != null)
+            {
+                db.UserDislikedPosts.Remove(foundDislikedPost);
+                post.Dislikes--;
+            }
+
             // If so, remove it from list and remove a like
             if (foundLikedPost != null)
             { 
@@ -224,6 +234,50 @@ namespace Social.Controllers
             }
   
        
+            db.Entry(post).State = EntityState.Modified;
+            db.SaveChanges();
+
+            return $"{post.Likes},{post.Dislikes}";
+        }
+
+        [HttpPost]
+        [Authorize]
+        public string Dislike(LikeData likeData)
+        {
+            int id = Convert.ToInt32(likeData.postID);
+            Post post = db.Posts.FirstOrDefault(p => p.ID == id);
+
+            UserDislikedPost userDislikedPost = new UserDislikedPost();
+            userDislikedPost.PostID = post.ID;
+            userDislikedPost.UserID = likeData.userID;
+            userDislikedPost.PostTitle = post.Title;
+
+            // See if post has already been disliked/liked by this user
+            var foundDislikedPost = db.UserDislikedPosts.FirstOrDefault(p => (p.PostID == post.ID && p.UserID == likeData.userID));
+            var foundLikedPost = db.UserLikedPosts.FirstOrDefault(p => (p.PostID == post.ID && p.UserID == likeData.userID));
+
+
+            // If user has liked it, then remove the like
+            if (foundLikedPost != null)
+            {
+                db.UserLikedPosts.Remove(foundLikedPost);
+                post.Likes--;
+            }
+
+            // If so, remove it from list and remove a dislike
+            if (foundDislikedPost != null)
+            {
+                db.UserDislikedPosts.Remove(foundDislikedPost);
+                post.Dislikes--;
+            }
+            // Otherwise, dislike it and add to user's disliked posts
+            else
+            {
+                db.UserDislikedPosts.Add(userDislikedPost);
+                post.Dislikes++;
+            }
+
+
             db.Entry(post).State = EntityState.Modified;
             db.SaveChanges();
 

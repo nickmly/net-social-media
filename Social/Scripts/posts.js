@@ -9,9 +9,14 @@
         url: url,
         data: data,
         success: function (res) {
-            var text = res.split(',');
-            likeText.text(text[0]);
-            dislikeText.text(text[1]);
+            if (res != "") {
+                var text = res.split(',');
+                likeText.text(text[0]);
+                dislikeText.text(text[1]);
+            }
+            else {
+                window.location = '/Account/Login';
+            }       
         },
         error: function (err) {
             console.log(err);
@@ -26,13 +31,10 @@ window.likePost = function (element) {
     var likeText = element.find('text');
     var button = element;
 
-    var otherButton = element.siblings().find('span'); // The dislike button
+    var otherButton = element.next(); // The dislike button
     var dislikeText = otherButton.find('text');
 
     var url = '/Posts/Like/';
-    if (otherButton.hasClass('active'))
-        return dislikePost(otherButton);
-    button.toggleClass('blue').toggleClass('active');
 
     sendAjax(post_id, url, likeText, dislikeText, otherButton);
 };
@@ -44,15 +46,12 @@ window.dislikePost = function (element) {
     var dislikeText = element.find('text');
     var button = element;
 
-    var otherButton = element.siblings().find('span'); // The like button
+    var otherButton = element.prev(); // The like button
     var likeText = otherButton.find('text');
 
-    var url = '/post/' + post_id + '/dislike';
-    if (otherButton.hasClass('active'))
-        return likePost(otherButton);
-    button.toggleClass('red').toggleClass('active');
+    var url = '/Posts/Dislike';
 
-    sendAjax(url, likeText, dislikeText, otherButton);
+    sendAjax(post_id, url, likeText, dislikeText, otherButton);
 };
 
 $('.likes').on('click', function () {

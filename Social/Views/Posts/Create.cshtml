@@ -16,7 +16,7 @@
                 @Html.LabelFor(model => model.Title)
                 <div class="field">
                     @Html.EditorFor(model => model.Title)
-                    @Html.ValidationMessageFor(model => model.Title, "", new { @class = "red" })
+                    @Html.ValidationMessageFor(model => model.Title, "", new { @class = "warning-message" })
                 </div>
             </div>
 
@@ -24,7 +24,7 @@
                 @Html.LabelFor(model => model.Link)
                 <div class="field">
                     @Html.EditorFor(model => model.Link)
-                    @Html.ValidationMessageFor(model => model.Link, "", new { @class = "red" })
+                    @Html.ValidationMessageFor(model => model.Link, "", new { @class = "warning-message" })
                 </div>
             </div>
 
@@ -32,7 +32,7 @@
                 @Html.LabelFor(model => model.Content)
                 <div class="field">
                     @Html.TextAreaFor(model => model.Content, new { @class = "text-area" } )
-                    @Html.ValidationMessageFor(model => model.Content, "", new { @class = "red" })
+                    @Html.ValidationMessageFor(model => model.Content, "", new { @class = "warning-message" })
                 </div>
             </div>
 

@@ -14,14 +14,14 @@
             @Html.LabelFor(m => m.Username)
             <div class="field">
                 @Html.TextBoxFor(m => m.Username, new { @class = "field" })
-                @Html.ValidationMessageFor(m => m.Username, "", new { @class = "red" })
+                @Html.ValidationMessageFor(m => m.Username, "", new { @class = "warning-message" })
             </div>
         </div>
         <div>
             @Html.LabelFor(m => m.Password)
             <div class="field">
                 @Html.PasswordFor(m => m.Password)
-                @Html.ValidationMessageFor(m => m.Password, "", new { @class = "red" })
+                @Html.ValidationMessageFor(m => m.Password, "", new { @class = "warning-message" })
             </div>
         </div>
         <input type="submit" value="Log in" class="login-btn" />

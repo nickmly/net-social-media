@@ -27,7 +27,22 @@
                 }
             }
 
-
+            <h4>Dislikes: </h4>
+            @{
+                if (ViewBag.CountDislikedPosts > 0)
+                {
+                    <ul>
+                        @foreach (var post in ViewBag.DislikedPosts)
+                        {
+                            <li><a class="link" href="@Url.Action("Details", "Posts", new { id = post.PostID })">@post.PostTitle</a></li>
+                        }
+                    </ul>
+                }
+                else
+                {
+                    <p>Nothing yet!</p>
+                }
+            }
         </div>
     </div>
 </div>
