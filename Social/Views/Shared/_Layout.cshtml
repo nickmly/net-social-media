@@ -15,7 +15,10 @@
 </head>
 
 <body>
-
+    @if (ClaimsPrincipal.Current.Identity.IsAuthenticated)
+    {
+        <div style="display:none;" id="user-id" data-id="@User.Identity.GetUserId()"></div>
+    }
     <div class="navbar">
         <a id="btn-home" href="/" class="menu-item">
             <i class="fas fa-home"></i> Home

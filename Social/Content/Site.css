@@ -378,6 +378,14 @@ ul {
     margin: 0;
 }
 
+.no-background {
+    background: none;
+}
+
+.no-box-shadow {
+    box-shadow: none;
+}
+
 .no-padding {
     padding: 0;
 }

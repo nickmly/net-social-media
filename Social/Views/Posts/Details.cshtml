@@ -44,7 +44,7 @@
     </div>
     @if (ClaimsPrincipal.Current.Identity.IsAuthenticated)
     {
-        <form class="form no-padding" action="/Posts/@Model.ID" method="POST">
+        <form class="form no-padding no-background no-box-shadow" action="/Posts/@Model.ID" method="POST">
             <div class="field">
                 <input type="text" name="comment[text]" placeholder="Comment">
             </div>

@@ -93,6 +93,12 @@ namespace Social.Controllers
         }
     }
 
+    public class LikeData
+    {
+        public string postID { get; set; }
+        public string userID { get; set; }
+    }
+
     public class PostsController : Controller
     {
         private Entities db = new Entities();
@@ -132,7 +138,7 @@ namespace Social.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
-        public ActionResult Create([Bind(Include = "ID,Title,Link,Content,LinkType,AuthorID,Likes,Dislikes")] Post post)
+        public ActionResult Create([Bind(Include = "ID,Title,Link,Content,LinkType,AuthorID,AuthorName,Likes,Dislikes")] Post post)
         {
             if (ModelState.IsValid)
             {
@@ -146,9 +152,6 @@ namespace Social.Controllers
                 post.Link = LinkChecker.ConvertGifvToMp4(post.Link);
                 // Get link type (Video, Image, Youtube)
                 post.LinkType = LinkChecker.GetLinkType(post.Link);
-
-
-
 
                 if (post.LinkType == "Youtube")
                     post.Link = LinkChecker.ConvertYoutubeLink(post.Link);
@@ -183,7 +186,7 @@ namespace Social.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
-        public ActionResult Edit([Bind(Include = "ID,Title,Link,Content,LinkType,AuthorID,Likes,Dislikes")] Post post)
+        public ActionResult Edit([Bind(Include = "ID,Title,Link,Content,LinkType,AuthorID,AuthorName,Likes,Dislikes")] Post post)
         {
             if (ModelState.IsValid)
             {
@@ -192,6 +195,20 @@ namespace Social.Controllers
                 return RedirectToAction("Index");
             }
             return View(post);
+        }
+
+        [HttpPost]
+        public string Like(LikeData likeData)
+        {
+            int id = Convert.ToInt32(likeData.postID);
+            Post post = db.Posts.Where(p => p.ID == id).First();
+
+
+            post.Likes++;
+            db.Entry(post).State = EntityState.Modified;
+            db.SaveChanges();
+
+            return $"{post.Likes},{post.Dislikes}";
         }
 
         // GET: Posts/Delete/5
