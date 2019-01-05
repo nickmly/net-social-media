@@ -248,6 +248,8 @@
     <Content Include="ApplicationInsights.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <None Include="Properties\PublishProfiles\social-media - Web Deploy.pubxml" />
+    <None Include="Properties\PublishProfiles\socialmediaapp - Web Deploy.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\card-openers.js" />
     <Content Include="Scripts\jquery-3.3.1.js" />
@@ -269,7 +271,9 @@
       <DependentUpon>SocialModel.edmx</DependentUpon>
       <LastGenOutput>SocialModel.cs</LastGenOutput>
     </Content>
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>

@@ -43,6 +43,23 @@
                     <p>Nothing yet!</p>
                 }
             }
+
+            <h4>Comments:</h4>
+            @{
+                if (ViewBag.CountComments > 0)
+                {
+                    <ul>
+                        @foreach (var comment in ViewBag.Comments)
+                        {
+                            <li><a class="link" href="@Url.Action("Details", "Posts", new { id = comment.PostID })">@comment.Content</a></li>
+                        }
+                    </ul>
+                }
+                else
+                {
+                    <p>Nothing yet!</p>
+                }
+            }
         </div>
     </div>
 </div>

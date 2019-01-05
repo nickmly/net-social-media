@@ -35,6 +35,10 @@ namespace Social.Controllers
             ViewBag.DislikedPosts = dislikedPosts;
             ViewBag.CountDislikedPosts = dislikedPosts.Count();
 
+            var comments = db.Comments.Where(c => c.AuthorID == aspNetUser.Id);
+            ViewBag.Comments = comments;
+            ViewBag.CountComments = comments.Count();
+
             return View(aspNetUser);
         }
 

@@ -21,7 +21,7 @@ namespace Social.Models
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         public ApplicationDbContext()
-            : base("DefaultConnection", throwIfV1Schema: false)
+            : base("SqlConnString", throwIfV1Schema: false)
         {
         }
 
