@@ -106,7 +106,8 @@ namespace Social.Controllers
         // GET: Posts
         public ActionResult Index()
         {
-            return View(db.Posts.ToList());
+            var posts = db.Posts.OrderByDescending(p => p.Likes);
+            return View(posts);
         }
 
         // GET: Posts/Details/5
