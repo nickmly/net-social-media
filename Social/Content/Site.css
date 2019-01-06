@@ -133,7 +133,13 @@ body {
 
 .card-body .image, .card-body .video {
     width: 100%;
-    max-width: 33%;
+    max-width: 100%;
+}
+
+@media screen and (min-width: 512px) {
+    .card-body .image, .card-body .video {
+        max-width: 66%;
+    }
 }
 
 .card-footer {
