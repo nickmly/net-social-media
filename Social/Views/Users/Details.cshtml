@@ -44,6 +44,24 @@
                 }
             }
 
+
+            <h4>Submissions:</h4>
+            @{
+                if (ViewBag.CountPosts > 0)
+                {
+                    <ul>
+                        @foreach (var post in ViewBag.Posts)
+                        {
+                            <li><a class="link" href="@Url.Action("Details", "Posts", new { id = post.ID })">@post.Title</a></li>
+                        }
+                    </ul>
+                }
+                else
+                {
+                    <p>Nothing yet!</p>
+                }
+            }
+
             <h4>Comments:</h4>
             @{
                 if (ViewBag.CountComments > 0)

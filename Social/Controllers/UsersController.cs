@@ -39,6 +39,10 @@ namespace Social.Controllers
             ViewBag.Comments = comments;
             ViewBag.CountComments = comments.Count();
 
+            var posts = db.Posts.Where(p => p.AuthorID == aspNetUser.Id);
+            ViewBag.Posts = posts;
+            ViewBag.CountPosts = posts.Count();
+
             return View(aspNetUser);
         }
 
