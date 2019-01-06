@@ -12,17 +12,17 @@
         <h2>Create a new account</h2>
         <div class="field">
             @Html.LabelFor(m => m.Username)
-            @Html.TextBoxFor(m => m.Username)
+            @Html.TextBoxFor(m => m.Username, new { required = "required" })
         </div>
         <div class="field">
             @Html.LabelFor(m => m.Password)
 
-            @Html.PasswordFor(m => m.Password)
+            @Html.PasswordFor(m => m.Password, new { required = "required" })
         </div>
         <div class="field">
             @Html.LabelFor(m => m.ConfirmPassword)
 
-            @Html.PasswordFor(m => m.ConfirmPassword)
+            @Html.PasswordFor(m => m.ConfirmPassword, new { required = "required" })
         </div>
         <input type="submit" class="login-btn" value="Register" />
     }
