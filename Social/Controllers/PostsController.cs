@@ -9,6 +9,11 @@ using System.Web.Mvc;
 using Social;
 using Microsoft.AspNet.Identity;
 using System.Text.RegularExpressions;
+using System.Net.Http;
+using System.Threading.Tasks;
+
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Social.Controllers
 {
@@ -103,11 +108,52 @@ namespace Social.Controllers
     {
         private Entities db = new Entities();
 
-        // GET: Posts
-        public ActionResult Index()
+        private List<Post> redditPosts = new List<Post>();
+
+        public async Task PopulatePosts()
         {
+            JObject json = await NetConfig.GetJSONAsync("/r/all/.json");
+            if (json["error"] ==  null)
+            {
+                int index = 1;
+                foreach (var post in json["data"]["children"])
+                {
+                    var currentPost = post["data"];
+                    Post newPost = new Post();
+                    newPost.ID = index;
+                    newPost.Title = currentPost["title"].ToString();
+                    
+                    newPost.Link = currentPost["url"].ToString();                   
+                    newPost.AuthorName = currentPost["author"].ToString();
+                    
+                    newPost.Link = LinkChecker.ConvertGifvToMp4(newPost.Link);
+                    newPost.LinkType = LinkChecker.GetLinkType(newPost.Link);
+                    if (newPost.LinkType == "Youtube")
+                        newPost.Link = LinkChecker.ConvertYoutubeLink(newPost.Link);
+
+                    if (Convert.ToBoolean(currentPost["is_video"]) == true)
+                    {
+                        newPost.Link = currentPost["secure_media"]["reddit_video"]["fallback_url"].ToString();
+                        newPost.LinkType = "Video";
+                    }
+
+                    redditPosts.Add(newPost);
+                    index++;
+                }
+            }
+            else
+            {
+                throw new HttpException(400, json["error"].ToString());
+            }
+        }
+
+        // GET: Posts
+        public async Task<ActionResult> Index()
+        {
+            await PopulatePosts();
+
             var posts = db.Posts.OrderByDescending(p => p.Likes);
-            return View(posts);
+            return View(redditPosts);
         }
 
         // GET: Posts/Details/5
@@ -208,13 +254,13 @@ namespace Social.Controllers
             userLikedPost.PostID = post.ID;
             userLikedPost.UserID = likeData.userID;
             userLikedPost.PostTitle = post.Title;
-        
+
             // See if post has already been liked/disliked by this user
             var foundLikedPost = db.UserLikedPosts.FirstOrDefault(p => (p.PostID == post.ID && p.UserID == likeData.userID));
             var foundDislikedPost = db.UserDislikedPosts.FirstOrDefault(p => (p.PostID == post.ID && p.UserID == likeData.userID));
 
             // If user has disliked it, then remove the dislike
-            if(foundDislikedPost != null)
+            if (foundDislikedPost != null)
             {
                 db.UserDislikedPosts.Remove(foundDislikedPost);
                 post.Dislikes--;
@@ -222,9 +268,9 @@ namespace Social.Controllers
 
             // If so, remove it from list and remove a like
             if (foundLikedPost != null)
-            { 
-               db.UserLikedPosts.Remove(foundLikedPost);
-               post.Likes--;
+            {
+                db.UserLikedPosts.Remove(foundLikedPost);
+                post.Likes--;
             }
             // Otherwise, like it and add to user's liked posts
             else
@@ -232,8 +278,8 @@ namespace Social.Controllers
                 db.UserLikedPosts.Add(userLikedPost);
                 post.Likes++;
             }
-  
-       
+
+
             db.Entry(post).State = EntityState.Modified;
             db.SaveChanges();
 
