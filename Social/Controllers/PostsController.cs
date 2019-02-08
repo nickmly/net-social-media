@@ -52,6 +52,13 @@ namespace Social.Controllers
             return newUrl;
         }
 
+        public static string ConvertGfycatLink(string url)
+        {
+            string routeData = url.Split(new string[] { ".com/" }, StringSplitOptions.None)[1];
+            string newUrl = "https://giant.gfycat.com/" + routeData + ".webm";
+            return newUrl;
+        }
+
         public static string GetLinkType(string url)
         {
             if (string.IsNullOrEmpty(url))
@@ -63,6 +70,8 @@ namespace Social.Controllers
                 return "Video";
             else if (CheckIfYoutube(url))
                 return "Youtube";
+            else if (CheckIfGfycat(url))
+                return "Gfycat";
 
             return "default";
         }
@@ -96,6 +105,16 @@ namespace Social.Controllers
             Match match = regex.Match(url);
             return match.Success;
         }
+
+        private static bool CheckIfGfycat(string url)
+        {
+            if (string.IsNullOrEmpty(url))
+                return false;
+
+            Regex regex = new Regex(@"(?:https?:\/\/)(?:www)?\.?(?:gfycat)(?:\.com)");
+            Match match = regex.Match(url);
+            return match.Success;
+        }
     }
 
     public class LikeData
@@ -112,7 +131,7 @@ namespace Social.Controllers
 
         public async Task PopulatePosts()
         {
-            JObject json = await NetConfig.GetJSONAsync("/r/all/.json");
+            JObject json = await NetConfig.GetJSONAsync("/r/gifs/.json");
             if (json["error"] ==  null)
             {
                 int index = 1;
@@ -122,14 +141,23 @@ namespace Social.Controllers
                     Post newPost = new Post();
                     newPost.ID = index;
                     newPost.Title = currentPost["title"].ToString();
+                    newPost.Content = currentPost["selftext"].ToString();
                     
                     newPost.Link = currentPost["url"].ToString();                   
                     newPost.AuthorName = currentPost["author"].ToString();
+
+                    newPost.Likes = Convert.ToInt32(currentPost["ups"]);
                     
                     newPost.Link = LinkChecker.ConvertGifvToMp4(newPost.Link);
                     newPost.LinkType = LinkChecker.GetLinkType(newPost.Link);
                     if (newPost.LinkType == "Youtube")
                         newPost.Link = LinkChecker.ConvertYoutubeLink(newPost.Link);
+                    if (newPost.LinkType == "Gfycat")
+                    {
+                        newPost.Link = LinkChecker.ConvertGfycatLink(newPost.Link);
+                        newPost.LinkType = "Video";
+                    }
+                       
 
                     if (Convert.ToBoolean(currentPost["is_video"]) == true)
                     {

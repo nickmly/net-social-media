@@ -45,9 +45,12 @@
                         Submitted by <a href="/Users/Details/@post.AuthorID">@post.AuthorName</a>
                     </h5>
                 </div>
-                <div class="card-opener" data-id="@post.ID">
-                    <span class="card-opener-text">View More</span> <i class="fas fa-caret-down"></i>
-                </div>
+                @if (post.LinkType != "default" || !String.IsNullOrEmpty(post.Content))
+                {
+                    <div class="card-opener" data-id="@post.ID">
+                        <span class="card-opener-text">View More</span> <i class="fas fa-caret-down"></i>
+                    </div>
+                }
                 <div class="card-body post" id="card-body-@post.ID">
                     <p>@post.Content</p>
                     @{
