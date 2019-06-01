@@ -1,4 +1,4 @@
-﻿@model Social.AspNetUser
+﻿@model Social.Models.UserModel
 
 @{
     ViewBag.Title = "Details";
@@ -7,7 +7,7 @@
 <div class="container">
     <div class="card">
         <div class="card-header">
-            <h2>@Model.UserName</h2>
+            <h2>@Model.username</h2>
         </div>
         <div class="card-body">
             <h4>Likes: </h4>

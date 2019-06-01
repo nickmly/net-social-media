@@ -7,52 +7,27 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using Social;
+using Social.Models;
 
 namespace Social.Controllers
 {
     public class UsersController : Controller
     {
-        private Entities db = new Entities();
 
-
-        // GET: Users/Details/5
-        public ActionResult Details(string id)
+        // GET: Users/Name
+        public ActionResult Details(string name)
         {
-            if (id == null)
+            if (string.IsNullOrEmpty(name))
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            AspNetUser aspNetUser = db.AspNetUsers.Find(id);
-            if (aspNetUser == null)
+
+            UserModel user = new UserModel
             {
-                return HttpNotFound();
-            }
-            var likedPosts = db.UserLikedPosts.Where(p => p.UserID == aspNetUser.Id);
-            ViewBag.LikedPosts = likedPosts;
-            ViewBag.CountLikedPosts = likedPosts.Count();
+                username = name
+            };
 
-            var dislikedPosts = db.UserDislikedPosts.Where(p => p.UserID == aspNetUser.Id);
-            ViewBag.DislikedPosts = dislikedPosts;
-            ViewBag.CountDislikedPosts = dislikedPosts.Count();
-
-            var comments = db.Comments.Where(c => c.AuthorID == aspNetUser.Id);
-            ViewBag.Comments = comments;
-            ViewBag.CountComments = comments.Count();
-
-            var posts = db.Posts.Where(p => p.AuthorID == aspNetUser.Id);
-            ViewBag.Posts = posts;
-            ViewBag.CountPosts = posts.Count();
-
-            return View(aspNetUser);
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
+            return View(user);
         }
     }
 }

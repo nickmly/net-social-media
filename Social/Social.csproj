@@ -194,53 +194,18 @@
     <Compile Include="App_Start\NetConfig.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
-    <Compile Include="App_Start\IdentityConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
-    <Compile Include="App_Start\Startup.Auth.cs" />
-    <Compile Include="AspNetUser.cs">
-      <DependentUpon>SocialModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Comment.cs">
-      <DependentUpon>SocialModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Controllers\AccountController.cs" />
-    <Compile Include="Controllers\CommentsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\PostsController.cs" />
     <Compile Include="Controllers\UsersController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Models\AccountViewModels.cs" />
-    <Compile Include="Models\IdentityModels.cs" />
-    <Compile Include="Models\ManageViewModels.cs" />
-    <Compile Include="Post.cs">
-      <DependentUpon>SocialModel.tt</DependentUpon>
-    </Compile>
+    <Compile Include="Models\CommentModel.cs" />
+    <Compile Include="Models\PostModel.cs" />
+    <Compile Include="Models\UserModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SocialModel.Context.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>SocialModel.Context.tt</DependentUpon>
-    </Compile>
-    <Compile Include="SocialModel.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>SocialModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="SocialModel.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>SocialModel.edmx</DependentUpon>
-    </Compile>
     <Compile Include="Startup.cs" />
-    <Compile Include="UserDislikedPost.cs">
-      <DependentUpon>SocialModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="UserLikedPost.cs">
-      <DependentUpon>SocialModel.tt</DependentUpon>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Content Include="favicon.ico" />
@@ -251,6 +216,8 @@
     </Content>
     <None Include="Properties\PublishProfiles\social-media - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\socialmediaapp - Web Deploy.pubxml" />
+    <None Include="Properties\PublishProfiles\socialmediademo - FTP.pubxml" />
+    <None Include="Properties\PublishProfiles\socialmediademo - Web Deploy.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\card-openers.js" />
     <Content Include="Scripts\jquery-3.3.1.js" />
@@ -262,16 +229,6 @@
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
     <Content Include="Scripts\posts.js" />
-    <Content Include="SocialModel.Context.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>SocialModel.edmx</DependentUpon>
-      <LastGenOutput>SocialModel.Context.cs</LastGenOutput>
-    </Content>
-    <Content Include="SocialModel.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>SocialModel.edmx</DependentUpon>
-      <LastGenOutput>SocialModel.cs</LastGenOutput>
-    </Content>
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -288,41 +245,11 @@
     <Content Include="Views\Home\About.cshtml" />
     <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
-    <Content Include="Views\Account\_ExternalLoginsListPartial.cshtml" />
-    <Content Include="Views\Account\ConfirmEmail.cshtml" />
-    <Content Include="Views\Account\ExternalLoginConfirmation.cshtml" />
-    <Content Include="Views\Account\ExternalLoginFailure.cshtml" />
-    <Content Include="Views\Account\ForgotPassword.cshtml" />
-    <Content Include="Views\Account\ForgotPasswordConfirmation.cshtml" />
-    <Content Include="Views\Account\Login.cshtml" />
-    <Content Include="Views\Account\Register.cshtml" />
-    <Content Include="Views\Account\ResetPassword.cshtml" />
-    <Content Include="Views\Account\ResetPasswordConfirmation.cshtml" />
-    <Content Include="Views\Account\SendCode.cshtml" />
-    <Content Include="Views\Account\VerifyCode.cshtml" />
-    <Content Include="Views\Manage\AddPhoneNumber.cshtml" />
-    <Content Include="Views\Manage\ChangePassword.cshtml" />
-    <Content Include="Views\Manage\Index.cshtml" />
-    <Content Include="Views\Manage\ManageLogins.cshtml" />
-    <Content Include="Views\Manage\SetPassword.cshtml" />
-    <Content Include="Views\Manage\VerifyPhoneNumber.cshtml" />
     <Content Include="Views\Shared\Lockout.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
-    <EntityDeploy Include="SocialModel.edmx">
-      <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>SocialModel.Designer.cs</LastGenOutput>
-    </EntityDeploy>
-    <Content Include="SocialModel.edmx.diagram">
-      <DependentUpon>SocialModel.edmx</DependentUpon>
-    </Content>
-    <Content Include="Views\Posts\Create.cshtml" />
-    <Content Include="Views\Posts\Delete.cshtml" />
     <Content Include="Views\Posts\Details.cshtml" />
-    <Content Include="Views\Posts\Edit.cshtml" />
     <Content Include="Views\Posts\Index.cshtml" />
     <Content Include="Views\Users\Details.cshtml" />
-    <Content Include="Views\Comments\Delete.cshtml" />
-    <Content Include="Views\Comments\Edit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

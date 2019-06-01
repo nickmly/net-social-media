@@ -31,5 +31,17 @@ namespace Social
             string json = @"{error: 'Invalid get request'}";
             return JObject.Parse(json);
         }
+
+        public static async Task<JArray> GetJSONArrayAsync(string path)
+        {
+            HttpResponseMessage response = await client.GetAsync(path);
+            if (response.IsSuccessStatusCode)
+            {
+                var data = await response.Content.ReadAsStringAsync();
+                return JArray.Parse(data);
+            }
+            string json = @"{error: 'Invalid get request'}";
+            return JArray.Parse(json);
+        }
     }
 }

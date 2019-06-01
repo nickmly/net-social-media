@@ -15,6 +15,8 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
+using Social.Models;
+
 namespace Social.Controllers
 {
     public static class LinkChecker
@@ -125,30 +127,29 @@ namespace Social.Controllers
 
     public class PostsController : Controller
     {
-        private Entities db = new Entities();
 
-        private List<Post> redditPosts = new List<Post>();
+        private List<PostModel> redditPosts = new List<PostModel>();
 
         public async Task PopulatePosts()
         {
-            JObject json = await NetConfig.GetJSONAsync("/r/gifs/.json");
-            if (json["error"] ==  null)
+            JObject json = await NetConfig.GetJSONAsync("/r/all/.json");
+            if (json["error"] == null)
             {
                 int index = 1;
                 foreach (var post in json["data"]["children"])
                 {
                     var currentPost = post["data"];
-                    Post newPost = new Post();
-                    newPost.ID = index;
-                    newPost.Title = currentPost["title"].ToString();
-                    newPost.Content = currentPost["selftext"].ToString();
-                    
-                    newPost.Link = currentPost["url"].ToString();                   
-                    newPost.AuthorName = currentPost["author"].ToString();
+                    PostModel newPost = new PostModel
+                    {
+                        ID = index,
+                        Title = currentPost["title"].ToString(),
+                        Content = currentPost["selftext"].ToString(),
+                        Permalink = currentPost["permalink"].ToString(),
+                        Link = currentPost["url"].ToString(),
+                        AuthorName = currentPost["author"].ToString(),
+                        Likes = Convert.ToInt32(currentPost["ups"])
+                    };
 
-                    newPost.Likes = Convert.ToInt32(currentPost["ups"]);
-                    
-                    newPost.Link = LinkChecker.ConvertGifvToMp4(newPost.Link);
                     newPost.LinkType = LinkChecker.GetLinkType(newPost.Link);
                     if (newPost.LinkType == "Youtube")
                         newPost.Link = LinkChecker.ConvertYoutubeLink(newPost.Link);
@@ -157,13 +158,12 @@ namespace Social.Controllers
                         newPost.Link = LinkChecker.ConvertGfycatLink(newPost.Link);
                         newPost.LinkType = "Video";
                     }
-                       
 
                     if (Convert.ToBoolean(currentPost["is_video"]) == true)
                     {
                         newPost.Link = currentPost["secure_media"]["reddit_video"]["fallback_url"].ToString();
                         newPost.LinkType = "Video";
-                    }
+                    }                    
 
                     redditPosts.Add(newPost);
                     index++;
@@ -175,222 +175,59 @@ namespace Social.Controllers
             }
         }
 
+        protected async Task<List<CommentModel>> GetPostCommentsAsync(PostModel post)
+        {
+            List<CommentModel> postComments = new List<CommentModel>();
+            JArray json = await NetConfig.GetJSONArrayAsync(post.Permalink + ".json");
+            JToken commentsJson = json.ElementAt(1).ElementAt(1).ElementAt(0).ElementAt(2).ElementAt(0);
+            for(int i = 0; i < 25; i ++)
+            {
+                JObject commentJson = (JObject)commentsJson.ElementAt(i);
+                var currentComment = commentJson.GetValue("data");
+                if (currentComment == null)
+                    continue;
+
+                CommentModel newComment = new CommentModel
+                {
+                    AuthorName = currentComment["author"].ToString(),
+                    Content = currentComment["body"].ToString()
+                };
+                postComments.Add(newComment);
+            }
+            return postComments;
+
+        }
+
         // GET: Posts
         public async Task<ActionResult> Index()
         {
             await PopulatePosts();
 
-            var posts = db.Posts.OrderByDescending(p => p.Likes);
-            return View(redditPosts);
+            var posts = redditPosts.OrderByDescending(p => p.Likes);
+            return View(posts);
         }
 
         // GET: Posts/Details/5
-        public ActionResult Details(int? id)
+        public async Task<ActionResult> Details(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Post post = db.Posts.Find(id);
+            // TODO: REMOVE AND FIND WAY TO PERSIST
+            await PopulatePosts();
+
+            PostModel post = redditPosts.Find(p => p.ID == id);
             if (post == null)
             {
                 return HttpNotFound();
-            }
-            ViewBag.AuthorName = db.AspNetUsers.FirstOrDefault(u => (u.Id == post.AuthorID)).UserName;
-            var comments = db.Comments.Where(c => c.PostID == id);
+            }            
+
+            ViewBag.AuthorName = post.AuthorName;
+            var comments = await GetPostCommentsAsync(post);
             ViewBag.Comments = comments;
             ViewBag.CountComments = comments.Count();
             return View(post);
-        }
-
-        // GET: Posts/Create
-        [Authorize]
-        public ActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: Posts/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        [Authorize]
-        public ActionResult Create([Bind(Include = "ID,Title,Link,Content,LinkType,AuthorID,AuthorName,Likes,Dislikes")] Post post)
-        {
-            if (ModelState.IsValid)
-            {
-                post.Likes = 0;
-                post.Dislikes = 0;
-                // Get User ID and name and assign it to the post for reference later
-                post.AuthorID = User.Identity.GetUserId();
-                post.AuthorName = User.Identity.GetUserName();
-
-                // Convert the link to an mp4 if it is a gifv
-                post.Link = LinkChecker.ConvertGifvToMp4(post.Link);
-                // Get link type (Video, Image, Youtube)
-                post.LinkType = LinkChecker.GetLinkType(post.Link);
-
-                if (post.LinkType == "Youtube")
-                    post.Link = LinkChecker.ConvertYoutubeLink(post.Link);
-
-                db.Posts.Add(post);
-                db.SaveChanges();
-                return RedirectToAction("Index");
-            }
-
-            return View(post);
-        }
-
-        // GET: Posts/Edit/5
-        [Authorize]
-        public ActionResult Edit(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Post post = db.Posts.Find(id);
-            if (post == null)
-            {
-                return HttpNotFound();
-            }
-            return View(post);
-        }
-
-        // POST: Posts/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        [Authorize]
-        public ActionResult Edit([Bind(Include = "ID,Title,Link,Content,LinkType,AuthorID,AuthorName,Likes,Dislikes")] Post post)
-        {
-            if (ModelState.IsValid)
-            {
-                db.Entry(post).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
-            }
-            return View(post);
-        }
-
-        [HttpPost]
-        [Authorize]
-        public string Like(LikeData likeData)
-        {
-            int id = Convert.ToInt32(likeData.postID);
-            Post post = db.Posts.FirstOrDefault(p => p.ID == id);
-
-            UserLikedPost userLikedPost = new UserLikedPost();
-            userLikedPost.PostID = post.ID;
-            userLikedPost.UserID = likeData.userID;
-            userLikedPost.PostTitle = post.Title;
-
-            // See if post has already been liked/disliked by this user
-            var foundLikedPost = db.UserLikedPosts.FirstOrDefault(p => (p.PostID == post.ID && p.UserID == likeData.userID));
-            var foundDislikedPost = db.UserDislikedPosts.FirstOrDefault(p => (p.PostID == post.ID && p.UserID == likeData.userID));
-
-            // If user has disliked it, then remove the dislike
-            if (foundDislikedPost != null)
-            {
-                db.UserDislikedPosts.Remove(foundDislikedPost);
-                post.Dislikes--;
-            }
-
-            // If so, remove it from list and remove a like
-            if (foundLikedPost != null)
-            {
-                db.UserLikedPosts.Remove(foundLikedPost);
-                post.Likes--;
-            }
-            // Otherwise, like it and add to user's liked posts
-            else
-            {
-                db.UserLikedPosts.Add(userLikedPost);
-                post.Likes++;
-            }
-
-
-            db.Entry(post).State = EntityState.Modified;
-            db.SaveChanges();
-
-            return $"{post.Likes},{post.Dislikes}";
-        }
-
-        [HttpPost]
-        [Authorize]
-        public string Dislike(LikeData likeData)
-        {
-            int id = Convert.ToInt32(likeData.postID);
-            Post post = db.Posts.FirstOrDefault(p => p.ID == id);
-
-            UserDislikedPost userDislikedPost = new UserDislikedPost();
-            userDislikedPost.PostID = post.ID;
-            userDislikedPost.UserID = likeData.userID;
-            userDislikedPost.PostTitle = post.Title;
-
-            // See if post has already been disliked/liked by this user
-            var foundDislikedPost = db.UserDislikedPosts.FirstOrDefault(p => (p.PostID == post.ID && p.UserID == likeData.userID));
-            var foundLikedPost = db.UserLikedPosts.FirstOrDefault(p => (p.PostID == post.ID && p.UserID == likeData.userID));
-
-
-            // If user has liked it, then remove the like
-            if (foundLikedPost != null)
-            {
-                db.UserLikedPosts.Remove(foundLikedPost);
-                post.Likes--;
-            }
-
-            // If so, remove it from list and remove a dislike
-            if (foundDislikedPost != null)
-            {
-                db.UserDislikedPosts.Remove(foundDislikedPost);
-                post.Dislikes--;
-            }
-            // Otherwise, dislike it and add to user's disliked posts
-            else
-            {
-                db.UserDislikedPosts.Add(userDislikedPost);
-                post.Dislikes++;
-            }
-
-
-            db.Entry(post).State = EntityState.Modified;
-            db.SaveChanges();
-
-            return $"{post.Likes},{post.Dislikes}";
-        }
-
-        // GET: Posts/Delete/5
-        public ActionResult Delete(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Post post = db.Posts.Find(id);
-            if (post == null)
-            {
-                return HttpNotFound();
-            }
-            return View(post);
-        }
-
-        // POST: Posts/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
-        {
-            Post post = db.Posts.Find(id);
-            db.Posts.Remove(post);
-            db.SaveChanges();
-            return RedirectToAction("Index");
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
         }
     }
 }

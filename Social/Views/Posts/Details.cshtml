@@ -1,4 +1,4 @@
-﻿@model Social.Post
+﻿@model Social.Models.PostModel
 @using System.Security.Claims;
 @using Microsoft.AspNet.Identity;
 
@@ -19,7 +19,7 @@
             {
                 <h2>@Model.Title</h2>
             }
-            <em>Submitted by <a href="/Users/Details/@Model.AuthorID">@ViewBag.AuthorName</a></em>
+            <em>Submitted by <a href="@Url.Action("Details", "Users", new { name = ViewBag.AuthorName })">@ViewBag.AuthorName</a></em>
         </div>
         <div class="card-body">
             <p>@Model.Content</p>
@@ -43,52 +43,20 @@
             }
         </div>
     </div>
-    <h3>Comments</h3>
-    @if (ClaimsPrincipal.Current.Identity.IsAuthenticated)
-    {
-        using (Html.BeginForm("Create", "Comments", new { postID = Model.ID }, FormMethod.Post, new { @class = "form no-padding no-background no-box-shadow", role = "form" }))
-        {
-            @Html.AntiForgeryToken()
-            <div class="field">
-                <input type="text" id="content" name="content" placeholder="Comment" required>
-            </div>
-            <div class="field">
-                <button class="green btn">
-                    Add Comment
-                    <i class="fas fa-plus"></i>
-                </button>
-            </div>
-
-        }
-    }
-    else
-    {
-        <p> You must be logged in to comment.</p>
-    }
+    <h3>Comments</h3>    
     @if (ViewBag.CountComments > 0)
     {
         <ul>
             @foreach (var comment in ViewBag.Comments)
             {
-                <div class="condensed-card">
+                <li class="condensed-card">
                     <div class="card-header">
-                        <a class="link no-margin" href="/Users/Details/@comment.AuthorID">@comment.AuthorName</a>
+                        <a class="link no-margin" href="@Url.Action("Details", "Users", new { name = comment.AuthorName })">@comment.AuthorName</a>
                     </div>
                     <div class="card-body">
                         @comment.Content
                     </div>
-                    @if (ClaimsPrincipal.Current.Identity.IsAuthenticated && User.Identity.GetUserId() == comment.AuthorID)
-                    {
-                    <div class="card-footer">
-                        <a class="orange btn" href="/Comments/Edit/@comment.ID">Edit</a>
-                        @using (Html.BeginForm("Delete", "Comments", new { id = comment.ID }, FormMethod.Post, new { @style = "display:inline;" }))
-                        {
-                            @Html.AntiForgeryToken()
-                            <button class="red btn">Delete</button>
-                        }
-                    </div>
-                    }
-                </div>
+                </li>
             }
         </ul>
     }

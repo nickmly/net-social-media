@@ -9,7 +9,6 @@ namespace Social
         public void Configuration(IAppBuilder app)
         {
             NetConfig.RunClient();
-            ConfigureAuth(app);
         }
     }
 }
